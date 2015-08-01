@@ -1,0 +1,19 @@
+{
+  "name": "flat-map",
+  "version": "0.0.1",
+  "description": "flat map implementation for event-stream",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "keywords": [
+    "event-stream",
+    "flat",
+    "flat-map",
+    "functional",
+    "map",
+    "stream"
+  ],
+  "author": "ryan.dy@gmail.com",
+  "license": "MIT"
+}
