@@ -1,0 +1,6 @@
+{
+  "loose": "all",
+  "ignore": ["node_modules"],
+  "optional": ["runtime"],
+  "stage": 0
+}

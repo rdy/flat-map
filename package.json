@@ -2,9 +2,13 @@
   "name": "flat-map",
   "version": "0.0.1",
   "description": "flat map implementation for event-stream",
-  "main": "index.js",
+  "main": "flat-map.js",
+  "repository": {
+    "type": "git",
+    "url": "rdy/flat-map.git"
+  },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp"
   },
   "keywords": [
     "event-stream",
@@ -15,5 +19,27 @@
     "stream"
   ],
   "author": "ryan.dy@gmail.com",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "babel-runtime": "^5.8.20",
+    "isstream": "^0.1.2",
+    "lodash.isarray": "^3.0.4",
+    "through": "^2.3.8"
+  },
+  "devDependencies": {
+    "babel": "^5.8.20",
+    "babel-eslint": "^4.0.5",
+    "del": "^1.2.0",
+    "event-stream": "^3.3.1",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-jasmine": "^2.0.1",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-plumber": "^1.0.1",
+    "merge-stream": "^0.1.8",
+    "npm": "^2.13.3",
+    "require-dir": "^0.3.0",
+    "run-sequence": "^1.1.2"
+  }
 }
