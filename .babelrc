@@ -1,6 +1,6 @@
 {
-  "loose": "all",
-  "ignore": ["node_modules"],
-  "optional": ["runtime"],
-  "stage": 0
+  "presets": ["es2015-loose", "stage-0"],
+  "plugins": [
+    "transform-runtime"
+  ]
 }
