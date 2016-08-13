@@ -1,9 +1,10 @@
 require('./spec_helper');
 
 describe('FlatMap', function() {
-  var es, result;
+  let es, result, subject;
   beforeEach(function() {
     es = require('event-stream');
+    subject = require('../src/flat-map');
   });
 
   function split(data, callback) {
@@ -15,10 +16,9 @@ describe('FlatMap', function() {
   }
 
   async function buildStream(array, callback) {
-    var flatMap = require('../src/flat-map');
     return new Promise((resolve, reject) => {
       es.readArray(array)
-        .pipe(flatMap(callback))
+        .pipe(subject(callback))
         .pipe(es.writeArray((err, array) => {
           if (err) reject(err);
           resolve(array);
@@ -56,6 +56,17 @@ describe('FlatMap', function() {
 
     it('maps a flat stream', function() {
       expect(result).toEqual(['one', 'two', 'three', 'four', 'five']);
+    });
+  });
+
+  describe('when the callback utilizes the count', () => {
+    beforeEach(async function(done) {
+      result = await buildStream(['one', 'two', 'three', 'four', 'five'], (data, callback, i) => callback(null, i));
+      done();
+    });
+
+    it('maps the count', function() {
+      expect(result).toEqual([0, 1, 2, 3, 4]);
     });
   });
 });
