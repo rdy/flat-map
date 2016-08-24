@@ -1,6 +1,7 @@
 const isStream = require('is-stream');
 const pipe = require('multipipe');
 const through = require('through');
+const Promise = require('any-promise');
 
 function isPromise(obj) {
   return obj instanceof Promise;
