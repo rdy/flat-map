@@ -34,3 +34,14 @@ When the callback data is a stream it flattens and maps it accordingly:
     .pipe(flatMap(function(data, callback) { callback(null, es.readArray(data.split(/\s+/))) });
   // ['one', 'two', 'three', 'four', 'five']    
 ```
+
+When the callback data is a promise it flattens and maps it accordingly:
+```javascript
+  var es = require('event-stream');
+  var flatMap = require('flat-map');
+  es.readArray('one two', 'three', 'four five')
+      .pipe(flatMap(function(data, callback) {
+        callback(null, new Promise(function(resolve) { resolve(data); }))
+      }));
+  // ['one', 'two', 'three', 'four', 'five']
+```

@@ -1,7 +1,7 @@
 {
   "name": "flat-map",
   "version": "0.1.0",
-  "description": "flat map implementation for event-stream",
+  "description": "flat map implementation for streams1",
   "main": "flat-map.js",
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "babel-runtime": "^6.11.6",
+    "multipipe": "^0.3.1",
     "is-stream": "^1.1.0",
     "through": "^2.3.8"
   },
@@ -34,13 +35,14 @@
     "babel-preset-es2015-loose": "^7.0.0",
     "babel-preset-stage-0": "^6.5.0",
     "del": "^2.2.1",
-    "event-stream": "^3.3.1",
+    "from": "^0.1.3",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
     "gulp-eslint": "^3.0.1",
     "gulp-jasmine": "^2.0.1",
     "gulp-load-plugins": "^1.0.0-rc.1",
     "gulp-plumber": "^1.0.1",
+    "jasmine-async-suite": "0.0.7",
     "merge-stream": "^1.0.0",
     "npm": "^3.10.5",
     "require-dir": "^0.3.0",
