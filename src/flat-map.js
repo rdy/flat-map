@@ -1,5 +1,4 @@
 const isStream = require('is-stream');
-const pipe = require('multipipe');
 const through = require('through');
 const Promise = require('any-promise');
 
@@ -10,11 +9,11 @@ function isPromise(obj) {
 function flatten(data) {
   if (Array.isArray(data)) return data.forEach(this.queue);
   if (isStream(data)) return new Promise((resolve, reject) => {
-    pipe(
-      data,
-      through(this.queue, resolve),
-      (err) => err && reject(err)
-    );
+    let err;
+    data.on('error', e => (err = e, reject(e))).pipe(through(this.queue, () => {
+      if (err) return reject(err);
+      resolve();
+    }));
   });
   this.queue(data);
 }
@@ -25,12 +24,13 @@ function flatMap(callback) {
 
   function pushPromise(data) {
     const result = this::flatten(data);
-    if (isPromise(result)) return promises.push(result);
+    if (isPromise(result)) promises.push(result);
   }
 
   return through(function(data) {
     callback(data, (err, data) => {
-      if (err) return this.emit('error', err);
+      if (err) this.emit('error', err);
+
       if (isPromise(data)) {
         this.pause();
         return data.then(this::pushPromise, err => this.emit('error', err)).then(this.resume, this.resume);
@@ -38,7 +38,8 @@ function flatMap(callback) {
       this::pushPromise(data);
     }, index++);
   }, function() {
-    Promise.all(promises).then(() => this.queue(null));
+    const end = () => this.queue(null);
+    Promise.all(promises).then(end, end);
   });
 }
 
