@@ -30,14 +30,23 @@ function flatMap(callback) {
 
   return through(function(data) {
     callback(data, (err, data) => {
-      if (err) this.emit('error', err);
-      if (isPromise(data)) return promises.push(data.then(this::flatten, err => this.emit('error', err)));
+      if (err) return promises.push(Promise.reject(err));
+      if (isPromise(data)) {
+        return promises.push(
+          data.then(this::flatten)
+        );
+      }
+
       const result = this::flatten(data);
       if (isPromise(result)) promises.push(result);
     }, index++);
   }, function() {
-    const end = () => this.queue(null);
-    Promise.all(promises).then(end, end);
+    Promise.all(promises)
+      .then(() => this.queue(null))
+      .catch(err => {
+        this.emit('error', err);
+        this.queue(null);
+      });
   });
 }
 
