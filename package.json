@@ -1,6 +1,6 @@
 {
   "name": "flat-map",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "flat map implementation for streams1",
   "main": "flat-map.js",
   "repository": {
