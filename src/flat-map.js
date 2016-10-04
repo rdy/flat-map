@@ -27,8 +27,11 @@ function flatten(data) {
 function flatMap(callback) {
   const promises = [];
   let index = 0;
+  function flush() {
+    stream.emit('end');
+  }
 
-  return through(function(data) {
+  const stream = through(function(data) {
     callback(data, (err, data) => {
       if (err) return promises.push(Promise.reject(err));
       if (isPromise(data)) {
@@ -39,7 +42,7 @@ function flatMap(callback) {
 
       const result = this::flatten(data);
       if (isPromise(result)) promises.push(result);
-    }, index++);
+    }, index++, flush);
   }, function() {
     Promise.all(promises)
       .then(() => this.queue(null))
@@ -48,6 +51,8 @@ function flatMap(callback) {
         this.queue(null);
       });
   });
+
+  return stream;
 }
 
 module.exports = flatMap;

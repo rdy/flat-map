@@ -44,6 +44,18 @@ describe('FlatMap', () => {
     });
   });
 
+  describe('when the callback calls the flush function', () => {
+    beforeEach.async(async() => {
+      result = await buildStream(['one', 'two'], (data, cb, index, flush) => {
+        flush();
+      });
+    });
+
+    it('kills the stream and does not emit data', () => {
+      expect(result).toEqual([]);
+    });
+  });
+
   describe('when the callback data is not an array', () => {
     beforeEach.async(async() => {
       result = await buildStream(['one', 'two'], split);
@@ -72,9 +84,11 @@ describe('FlatMap', () => {
 
     describe('when an error is emitted', () => {
       const error = new Error('some-error');
+
       function splitStreamWithError(data, callback) {
         callback(error);
       }
+
       it.async('maps a flat stream', async() => {
         let err;
         try {
