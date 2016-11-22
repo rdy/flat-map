@@ -15,8 +15,6 @@ gulp.task('babel', () => {
   ).pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', done => runSequence('clean', 'babel', done));
-
 gulp.task('watch', ['build'], () => {
   gulp.watch('src/**/*.js', ['babel']);
 });
