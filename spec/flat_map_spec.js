@@ -1,11 +1,12 @@
-require('./spec_helper');
+import './spec_helper';
+import from from 'from';
+import pipe from 'multipipe';
+import subject from '../src/flat-map';
+import through from 'through';
+import {timeout, withUnhandledRejection} from './support';
 
 describe('FlatMap', () => {
-  let from, result, subject;
-  beforeEach(() => {
-    from = require('from');
-    subject = require('../src/flat-map');
-  });
+  let result;
 
   function split(data, callback) {
     callback(null, data.split(/\s+/));
@@ -16,8 +17,6 @@ describe('FlatMap', () => {
   }
 
   async function buildStream(array, callback) {
-    const pipe = require('multipipe');
-    const through = require('through');
     const result = [];
     return new Promise((resolve, reject) => {
       pipe(
@@ -30,7 +29,9 @@ describe('FlatMap', () => {
   }
 
   describe('when the callback is called with an error', () => {
-    it.async('emits an error', async() => {
+    withUnhandledRejection();
+
+    it('emits an error', async () => {
       const error = new Error('some error');
       let err;
       try {
@@ -45,7 +46,7 @@ describe('FlatMap', () => {
   });
 
   describe('when the callback calls the flush function', () => {
-    beforeEach.async(async() => {
+    beforeEach(async () => {
       result = await buildStream(['one', 'two'], (data, cb, index, flush) => {
         flush();
       });
@@ -57,7 +58,7 @@ describe('FlatMap', () => {
   });
 
   describe('when the callback data is not an array', () => {
-    beforeEach.async(async() => {
+    beforeEach(async () => {
       result = await buildStream(['one', 'two'], split);
     });
 
@@ -67,7 +68,7 @@ describe('FlatMap', () => {
   });
 
   describe('when the callback data returns an array', () => {
-    beforeEach.async(async() => {
+    beforeEach(async () => {
       result = await buildStream(['one two', 'three', 'four five'], split);
     });
 
@@ -77,19 +78,22 @@ describe('FlatMap', () => {
   });
 
   describe('when the callback data returns a stream', () => {
-    it.async('maps a flat stream', async() => {
+    it('maps a flat stream', async () => {
       result = await buildStream(['one two', 'three', 'four five'], splitStream);
       expect(result).toEqual(['one', 'two', 'three', 'four', 'five']);
     });
 
     describe('when an error is emitted', () => {
-      const error = new Error('some-error');
+      let error;
+      beforeEach(() => {
+        error = new Error('some-error');
+      });
 
       function splitStreamWithError(data, callback) {
         callback(error);
       }
 
-      it.async('maps a flat stream', async() => {
+      it('maps a flat stream', async () => {
         let err;
         try {
           await buildStream(['one two', 'three', 'four five'], splitStreamWithError);
@@ -107,7 +111,7 @@ describe('FlatMap', () => {
         callback(null, new Promise(resolve => resolve(data)));
       }
 
-      beforeEach.async(async() => {
+      beforeEach(async () => {
         result = await buildStream(['one', 'two', 'three', 'four', 'five'], splitPromise);
       });
 
@@ -121,7 +125,7 @@ describe('FlatMap', () => {
         callback(null, new Promise(resolve => resolve(data.split(/\s+/))));
       }
 
-      beforeEach.async(async() => {
+      beforeEach(async () => {
         result = await buildStream(['one two', 'three', 'four five'], splitPromise);
       });
 
@@ -142,7 +146,7 @@ describe('FlatMap', () => {
 
       let streams;
 
-      beforeEach.async(async() => {
+      beforeEach(async () => {
         streams = [];
         const promise = buildStream(['one two', 'three', 'four five'], splitPromise);
         await timeout();
@@ -156,6 +160,8 @@ describe('FlatMap', () => {
     });
 
     describe('when the promise rejects', () => {
+      withUnhandledRejection();
+
       function splitPromise(data, callback) {
         callback(null, new Promise((resolve, reject) => {
           const stream = from(data.split(/\s+/));
@@ -167,7 +173,7 @@ describe('FlatMap', () => {
 
       let error, streams;
 
-      it.async('emits an error', async() => {
+      it('emits an error', async () => {
         error = new Error('some error');
         streams = [];
         const promise = buildStream(['one two', 'three', 'four five'], splitPromise);
@@ -185,7 +191,7 @@ describe('FlatMap', () => {
   });
 
   describe('when the callback utilizes the count', () => {
-    beforeEach.async(async() => {
+    beforeEach(async () => {
       result = await buildStream(['one', 'two', 'three', 'four', 'five'], (data, callback, i) => callback(null, i));
     });
 

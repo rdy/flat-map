@@ -1,6 +1,5 @@
-const isStream = require('is-stream');
-const through = require('through');
-const Promise = require('any-promise');
+import isStream from 'is-stream';
+import through from 'through';
 
 function isPromise(obj) {
   return obj.then;
@@ -55,4 +54,4 @@ function flatMap(callback) {
   return stream;
 }
 
-module.exports = flatMap;
+export default flatMap;
